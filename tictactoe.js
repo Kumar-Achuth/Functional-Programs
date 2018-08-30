@@ -1,125 +1,98 @@
-var turn = 'X';
-var score = {
-    'X': 0,
-    'O': 0
+var prompt = require('prompt');
+
+var board = {
+    1: ' ',
+    2: ' ',
+    3: ' ',
+    4: ' ',
+    5: ' ',
+    6: ' ',
+    7: ' ',
+    8: ' ',
+    9: ' '
 };
-var gridValue = 0;
 
-function fnLoad() {
-    var select = document.getElementById("grid");
-    for (i = 3; i <= 100; i += 1) {
-        var option = document.createElement('option');
-        select.options[select.options.length] = new Option(i + ' X ' + i, i);
-    }
-
-    addEvent(document.getElementById("game"), "click", fnChoose);
-
-    fnNewGame();
+function markBoard(position, mark) {
+    board[position] = mark.toUpperCase();
 }
 
-function addEvent(element, eventName, callback) {
+function printBoard() {
+    console.log('\n' +
+        ' ' + board[1] + ' | ' + board[2] + ' | ' + board[3] + '\n' +
+        ' ---------\n' +
+        ' ' + board[4] + ' | ' + board[5] + ' | ' + board[6] + '\n' +
+        ' ---------\n' +
+        ' ' + board[7] + ' | ' + board[8] + ' | ' + board[9] + '\n');
 
-    if (element.addEventListener) {
-        element.addEventListener(eventName, callback, false);
-    } else if (element.attachEvent) {
-        element.attachEvent("on" + eventName, callback);
-    }
 }
 
-function fnChoose(e) {
-    if (e.target && e.target.nodeName == "TD") {
-        var targetElement = document.getElementById(e.target.id);
-        var prevTurn;
-        if ((targetElement.className).indexOf("disabled") == -1) {
-            targetElement.innerHTML = turn;
-            targetElement.classList.add('disabled');
-            targetElement.classList.add(turn);
-            score[turn] += 1;
-            prevTurn = turn;
-            turn = turn === "X" ? "O" : "X";
-            if (fndecide(targetElement, prevTurn)) {
-                alert(prevTurn + ' has won the game');
-                fnNewGame();
-            } else if ((score['X'] + score['O']) == (gridValue * gridValue)) {
-                alert('Draw!');
-                fnNewGame();
+function isInt(value) {
+    var x;
+    if (isNaN(value)) {
+        return false;
+    }
+    x = parseFloat(value);
+    return (x | 0) === x;
+}
+
+function validateMove(position) {
+    if (isInt(position) === true && board[position] === ' ') {
+        return true;
+    }
+    return false;
+}
+
+// Everyone possible combination of three in a row
+var winCombinations = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7],
+                       [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
+
+// Determins if the passed in player has three in a row
+function checkWin(player) {
+    for (var i = 0; i < winCombinations.length; i++) {
+        var markCount = 0;
+        for (var j = 0; j < winCombinations[i].length; j++) {
+            if (board[winCombinations[i][j]] === player) {
+                markCount++;
             }
-        }
-    }
-}
-
-function fndecide(targetElement, prevTurn) {
-    var UL = document.getElementById('game');
-    var elements, i, j, cnt;
-    if (score[prevTurn] >= gridValue) {
-        var classes = targetElement.className.split(/\s+/);
-        for (i = 0; i < classes.length; i += 1) {
-            cnt = 0;
-            if (classes[i].indexOf('row') !== -1 || classes[i].indexOf('col') !== -1 || classes[i].indexOf('dia') !== -1) {
-                elements = UL.getElementsByClassName(classes[i]);
-                for (j = 0; j < elements.length; j += 1) {
-                    if (elements[j].innerHTML == prevTurn) {
-                        cnt += 1;
-                    }
-                }
-                if (cnt == gridValue) {
-                    return true;
-                }
+            if (markCount === 3) {
+                return true;
             }
         }
     }
     return false;
 }
 
-function fnNewGame() {
-    var gameUL = document.getElementById("game");
-    if (gameUL.innerHTML !== '') {
-        gameUL.innerHTML = null;
-        score = {
-            'X': 0,
-            'O': 0
-        };
-        turn = 'X';
-        gridValue = 0;
-    }
-    var select = document.getElementById("grid");
-    gridValue = select.options[select.selectedIndex].value;
-    var i, j, li, k = 0,
-        classLists;
-    var gridAdd = +gridValue + 1;
+function playTurn(player) {
 
-    for (i = 1; i <= gridValue; i += 1) {
-        tr = document.createElement('tr');
-        for (j = 1; j <= gridValue; j += 1) {
-            k += 1;
-            li = document.createElement('td');
-            li.setAttribute("id", 'li' + k);
+    console.log('Your turn player: ' + player);
+    prompt.start();
+    prompt.get(['position'], function (err, result) {
 
-            classLists = 'td row' + i + ' col' + j;
-
-            if (i === j) {
-                classLists = 'td row' + i + ' col' + j + ' dia0';
+        if (validateMove(result.position) === true) {
+            markBoard(result.position, player);
+            printBoard();
+            if (checkWin(player) === true) {
+                console.log('Winner Winner!'+player);
+                return;
             }
-
-            if ((i + j) === gridAdd) {
-                classLists = 'td row' + i + ' col' + j + ' dia1';
+            if (player === 'X') {
+                playTurn('O');
+            } else {
+                playTurn('X');
             }
-
-            if (!isEven(gridValue) && (Math.round(gridValue / 2) === i && Math.round(gridValue / 2) === j))
-                classLists = 'td row' + i + ' col' + j + ' dia0 dia1';
-
-            li.className = classLists;
-            tr.appendChild(li);
-
+        } else {
+            console.log('incorrect input please try again...');
+            playTurn(player);
         }
-        gameUL.appendChild(tr);
-    }
+    });
 }
 
+console.log('Game started: \n' +
+    ' 1 | 2 | 3 \n' +
+    ' --------- \n' +
+    ' 4 | 5 | 6 \n' +
+    ' --------- \n' +
+    ' 7 | 8 | 9 \n');
 
-function isEven(value) {
-    if (value % 2 == 0)
-        return true;
-    else
-        return false;
-}
+
+playTurn('X');
