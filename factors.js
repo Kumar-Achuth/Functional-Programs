@@ -6,7 +6,7 @@ var read = readline.createInterface({
 
 function factors()
 {
-    read.question('Enter the number', function(number)
+    read.question('Enter the number : ', function(number)
     {
         utility.factors(number)
         read.close();
