@@ -6,9 +6,9 @@ var read = readline.createInterface({
 });
 function windchill()
 {
-    read.question('Enter the temperature', function(temp)
+    read.question('Enter the temperature : ', function(temp)
     {
-        read.question('Enter the wind speed', function(wspeed)
+        read.question('Enter the wind speed : ', function(wspeed)
     {
         utility.windchill(temp, wspeed)
         read.close();

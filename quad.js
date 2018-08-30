@@ -6,11 +6,11 @@ output:process.stdout
 });
 function quad()
 {
-    read.question('Enter the value of a', function(a)
+    read.question('Enter the value of a : ', function(a)
     {
-        read.question('Enter the value of b', function(b)
+        read.question('Enter the value of b : ', function(b)
     {
-        read.question('Enter the value of c', function(c)
+        read.question('Enter the value of c : ', function(c)
     {
         utility.quad(a,b,c)
         read.close();

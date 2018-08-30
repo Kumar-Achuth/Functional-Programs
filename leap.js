@@ -6,7 +6,7 @@ var read=readline.createInterface({
 });
 function leap()
 {
-    read.question('Enter 4 digit year', function(year)
+    read.question('Enter 4 digit year : ', function(year)
     {
         utility.leap(year)
         read.close();

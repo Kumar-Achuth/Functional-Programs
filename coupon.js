@@ -6,9 +6,9 @@ var read = readline.createInterface({
 });
 function coupon()
 {
-    read.question('Enter the Minimum Coupon Number', function(minimum)
+    read.question('Enter the Minimum Coupon Number ', function(minimum)
     {
-        read.question('Enter the Maximum coupon Number', function(maximum)
+        read.question('Enter the Maximum coupon Number ', function(maximum)
     
     {
         utility.coupon(minimum, maximum)

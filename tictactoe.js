@@ -11,7 +11,6 @@ var board = {
     8: ' ',
     9: ' '
 };
-
 function markBoard(position, mark) {
     board[position] = mark.toUpperCase();
 }
@@ -42,11 +41,11 @@ function validateMove(position) {
     return false;
 }
 
-// Everyone possible combination of three in a row
+// Every possible combination of three in a row
 var winCombinations = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7],
                        [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
 
-// Determins if the passed in player has three in a row
+// Determines if the passed in player has three in a row
 function checkWin(player) {
     for (var i = 0; i < winCombinations.length; i++) {
         var markCount = 0;
